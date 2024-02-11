@@ -30,7 +30,19 @@ public class MainDao {
         updateUser.setPassword("Paweł666999");
         userDao.update(updateUser);
 
+        //delete
         userDao.delete(1);
+
+        //wszyscy użytkownicy
+        User nextUser = new User();
+        nextUser.setUserName("paweł");
+        nextUser.setEmail("pavel123@wp.pl");
+        nextUser.setPassword("paweł908074");
+        userDao.create(nextUser);
+        User[] allUser = userDao.allUsers();
+        for (User us : allUser) {
+            System.out.println(us);
+        }
 
     }
 

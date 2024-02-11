@@ -4,6 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import pl.coderslab.DbUtil;
 
 import java.sql.*;
+import java.util.Arrays;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -87,6 +88,33 @@ public class UserDao {
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+        }
+    }
+
+    private User[] addToArray(User u, User[] users) {
+        User[] tmpUsers = Arrays.copyOf(users, users.length + 1);
+        tmpUsers[users.length] = u;
+        return tmpUsers;
+    }
+
+
+    public User[] allUsers() {
+        try (Connection connection = DbUtil.getConnection()) {
+            User[] users = new User[0];
+            PreparedStatement preparedStatement = connection.prepareStatement(ALL_USERS);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("USERNAME"));
+                user.setEmail(rs.getString("EMAIL"));
+                user.setPassword(rs.getString("PASSWORD"));
+                users = addToArray(user, users);
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
